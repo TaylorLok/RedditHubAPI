@@ -14,3 +14,9 @@ Reddit is a social news aggregation, web content rating, and discussion website.
 ## Usage
 
 ## API Endpoints
+
+A. Autentcation
+Register into the system and login to get you bearer token to use to access the ressources
+
+1. Register: http://127.0.0.1:8000/api/register?
+2. Login: http://127.0.0.1:8000/api/login?
