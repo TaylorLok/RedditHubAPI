@@ -33,13 +33,16 @@ Route::middleware('auth:sanctum')->group(function ()
 
     Route::post('posts/{post}/upvote', [App\Http\Controllers\Api\VoteController::class, 'upvote']);
     Route::post('posts/{post}/downvote', [App\Http\Controllers\Api\VoteController::class, 'downvote']);
-    Route::post('posts/{post}/comments/{comment}/upvote', [App\Http\Controllers\Api\VoteController::class, 'upvote']);
-    Route::post('posts/{post}/comments/{comment}/downvote', [App\Http\Controllers\Api\VoteController::class, 'downvote']);
+
+    Route::post('posts/comments/{comment}/upvoteComment', [App\Http\Controllers\Api\VoteController::class, 'upvotePostComment']);
+    Route::post('posts/comments/{comment}/downvoteComment', [App\Http\Controllers\Api\VoteController::class, 'downvotePostComment']);
 
 
-    Route::post('posts/{post}/comments/{parentComment}/replies', [App\Http\Controllers\Api\CommentController::class, 'store']);
-    Route::put('comments/{comment}', [App\Http\Controllers\Api\CommentController::class, 'update']);
-    Route::put('comments/{parentComment}/replies/{reply}', [App\Http\Controllers\Api\CommentController::class, 'updateReply']);
-    Route::delete('comments/{comment}', [App\Http\Controllers\Api\CommentController::class, 'destroy']);
-    Route::delete('comments/replies/{parentComment}', [App\Http\Controllers\Api\CommentController::class, 'destroyReply']);
+    Route::post('posts/{post}/comments', [App\Http\Controllers\Api\CommentController::class, 'store']);
+
+    //i remove due to lack of time to test
+    // Route::put('comments/{comment}', [App\Http\Controllers\Api\CommentController::class, 'update']);
+    // Route::put('comments/{parentComment}/replies/{reply}', [App\Http\Controllers\Api\CommentController::class, 'updateReply']);
+    // Route::delete('comments/{comment}', [App\Http\Controllers\Api\CommentController::class, 'destroy']);
+    // Route::delete('comments/replies/{parentComment}', [App\Http\Controllers\Api\CommentController::class, 'destroyReply']);
 });

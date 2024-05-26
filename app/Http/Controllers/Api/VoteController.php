@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VoteController extends Controller
 {
-    public function upvote($postId = null, $commentId = null)
+    public function upvotePost($postId = null, $commentId = null)
     {
         $user = Auth::user();
 
@@ -20,7 +20,6 @@ class VoteController extends Controller
         {
             if ($postId) 
             {
-                // Upvote for a post
                 $post = Post::findOrFail($postId);
                 $vote = Vote::updateOrCreate(
                     ['user_id' => $user->id, 'post_id' => $postId],
@@ -29,9 +28,50 @@ class VoteController extends Controller
 
                 return response()->json(['message' => 'Post upvoted successfully'], 200);
             }
-            elseif ($commentId) 
+            else 
             {
-                // Upvote for a comment
+                return response()->json(['message' => 'Please provide a postId'], 400);
+            }
+        }
+        catch (ModelNotFoundException $e){
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+    }
+
+    public function downvotePost($postId = null, $commentId = null)
+    {
+        $user = Auth::user();
+
+        try{
+            if ($postId) 
+            {
+                $post = Post::findOrFail($postId);
+                $vote = Vote::updateOrCreate(
+                    ['user_id' => $user->id, 'post_id' => $postId],
+                    ['upvote' => false, 'downvote' => true]
+                );
+
+                return response()->json(['message' => 'Post downvoted successfully'], 200);
+            }
+            else 
+            {
+                return response()->json(['message' => 'Please provide a postId'], 400);
+            }
+        }
+        catch (ModelNotFoundException $e){
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+    }
+
+
+    public function upvotePostComment($commentId = null)
+    {
+        $user = Auth::user();
+
+        try
+        {
+            if ($commentId) 
+            {
                 $comment = Comment::findOrFail($commentId);
                 $vote = Vote::updateOrCreate(
                     ['user_id' => $user->id, 'comment_id' => $commentId],
@@ -42,34 +82,22 @@ class VoteController extends Controller
             }
             else 
             {
-                // Neither postId nor commentId provided
-                return response()->json(['message' => 'Please provide a postId or commentId'], 400);
+                return response()->json(['message' => 'Please provide a  commentId'], 400);
             }
         }
         catch (ModelNotFoundException $e){
-            return response()->json(['message' => 'Post or comment not found'], 404);
+            return response()->json(['message' => 'Comment not found'], 404);
         }
     }
 
-    public function downvote($postId = null, $commentId = null)
+    public function downvotePostComment($commentId = null)
     {
         $user = Auth::user();
 
         try{
-            if ($postId) 
+         
+            if ($commentId) 
             {
-                // Upvote for a post
-                $post = Post::findOrFail($postId);
-                $vote = Vote::updateOrCreate(
-                    ['user_id' => $user->id, 'post_id' => $postId],
-                    ['upvote' => false, 'downvote' => true]
-                );
-
-                return response()->json(['message' => 'Post downvoted successfully'], 200);
-            }
-            elseif ($commentId) 
-            {
-                // Upvote for a comment
                 $comment = Comment::findOrFail($commentId);
                 $vote = Vote::updateOrCreate(
                     ['user_id' => $user->id, 'comment_id' => $commentId],
@@ -80,12 +108,11 @@ class VoteController extends Controller
             }
             else 
             {
-                // Neither postId nor commentId provided
-                return response()->json(['message' => 'Please provide a postId or commentId'], 400);
+                return response()->json(['message' => 'Please provide a commentId'], 400);
             }
         }
         catch (ModelNotFoundException $e){
-            return response()->json(['message' => 'Post or comment not found'], 404);
+            return response()->json(['message' => 'Comment not found'], 404);
         }
     }
 }
