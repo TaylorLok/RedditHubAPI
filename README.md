@@ -42,5 +42,5 @@ Register into the system and login to get you bearer token to use to access the 
 8. A user should be able to query all the posts that they have upvoted or downvoted: `http://127.0.0.1:8000/api/posts/voted-posts`
 9. User can comment on a post: `http://127.0.0.1:8000/api/posts/1/comments?content=I remove comment reply due to lack of time`
 10. A User should be able to upvote comments: `http://127.0.0.1:8000/api/posts/comments/2/upvoteComment`
-11. A User should be able to downvote comments: ``http://127.0.0.1:8000/api/posts/comments/2/upvoteComment`
+11. A User should be able to downvote comments: `http://127.0.0.1:8000/api/posts/comments/2/upvoteComment`
 12. Viewing any post should show you all the comments for that post as well as how many people upvoted or downvoted the post: `http://127.0.0.1:8000/api/posts/11/view`
