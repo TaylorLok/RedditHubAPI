@@ -25,11 +25,11 @@ Route::middleware('auth:sanctum')->group(function ()
 {
     Route::get('posts', [App\Http\Controllers\Api\PostController::class, 'index']);
     Route::post('posts/create', [App\Http\Controllers\Api\PostController::class, 'store']);
-    Route::get('posts/{id}', [App\Http\Controllers\Api\PostController::class, 'show']);
     Route::put('posts/update/{id}', [App\Http\Controllers\Api\PostController::class, 'update']);
     Route::delete('posts/delete/{id}', [App\Http\Controllers\Api\PostController::class, 'destroy']);
     Route::get('posts/voted-posts', [App\Http\Controllers\Api\PostController::class, 'postByVoted']);
     Route::get('user/{username}/posts', [App\Http\Controllers\Api\PostController::class, 'postsByUsername']);
+    Route::get('posts/{id}', [App\Http\Controllers\Api\PostController::class, 'show']);
 
     Route::post('posts/{post}/upvote', [App\Http\Controllers\Api\VoteController::class, 'upvote']);
     Route::post('posts/{post}/downvote', [App\Http\Controllers\Api\VoteController::class, 'downvote']);

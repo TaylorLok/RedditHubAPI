@@ -15,7 +15,7 @@ class PostController extends Controller
     public function index()
     {
         try {
-            $user = Auth::user();
+            $user = Auth::userOrFail();
             $posts = Post::where('user_id', $user->id)
                         ->with('user', 'comments', 'votes')
                         ->paginate(100);
@@ -51,17 +51,27 @@ class PostController extends Controller
     //A user should be able to query all the posts that they have upvoted or downvoted.
     public function postByVoted()
     {
-        $user = Auth::user();
+        try
+        {
+            $user = Auth::user();
 
-        $postIds = Vote::where('user_id', $user->id)->pluck('post_id');
-
-        $posts = Post::whereIn('id', $postIds)->with('user', 'comments', 'votes')->paginate(100);
-        
-        if ($posts->isEmpty()) {
+            $postIds = Vote::where('user_id', $user->id)->pluck('post_id');
+    
+            $posts = Post::whereIn('id', $postIds)->with('user', 'comments', 'votes')->paginate(100);
+            
+            if ($posts->isEmpty()) {
+                return response()->json(['message' => 'No voted posts found for the authenticated user'], 404);
+            }
+    
+            return response()->json(['message' => 'Voted posts retrieved successfully', 'posts' => $posts], 200);
+        }
+        catch (ModelNotFoundException $e) 
+        {
             return response()->json(['message' => 'No voted posts found for the authenticated user'], 404);
         }
-
-        return response()->json(['message' => 'Voted posts retrieved successfully', 'posts' => $posts], 200);
+        catch (\Exception $e) {
+            return response()->json(['message' => 'Error: Something went wrong'], 500);
+        }
     }
 
     //A user should be able to see all the posts created by a specific user by using their username.

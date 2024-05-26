@@ -19,6 +19,7 @@ Reddit is a social news aggregation, web content rating, and discussion website.
 2. Password: `password`
 
 ## Usage
+A user should register using the registration endpoint, then login with his credential and it will generate a token that can be use as bearer token to access the resources.
 
 ## API Endpoints
 
@@ -36,5 +37,6 @@ Register into the system and login to get you bearer token to use to access the 
 4. Find post by username: `http://127.0.0.1:8000/api/user/Admin Test/posts`
 5. Update a post by id: `http://127.0.0.1:8000/api/posts/update/10`
 6. Delete a post by id: `http://127.0.0.1:8000/api/posts/delete/9`
-
-
+7. To upvote a post: `http://127.0.0.1:8000/api/posts/11/upvote`
+8. To downvote a post: `http://127.0.0.1:8000/api/posts/11/downvote`
+8. Retrieve all user post with downvote or upvote: `http://127.0.0.1:8000/api/posts/voted-posts`
