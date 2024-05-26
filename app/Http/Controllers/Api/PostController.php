@@ -8,21 +8,28 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Vote;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        $posts = Post::where('user_id', $user->id)
-                    ->with('user', 'comments', 'votes')
-                    ->paginate(100);
+        try {
+            $user = Auth::user();
+            $posts = Post::where('user_id', $user->id)
+                        ->with('user', 'comments', 'votes')
+                        ->paginate(100);
 
-        if ($posts->isEmpty()) {
+            if ($posts->isEmpty()) {
+                return response()->json(['message' => 'No posts found for the authenticated user'], 404);
+            }
+
+            return response()->json(['message' => 'Posts retrieved successfully', 'posts' => $posts], 200); 
+        } 
+        catch (ModelNotFoundException $e) 
+        {
             return response()->json(['message' => 'No posts found for the authenticated user'], 404);
         }
-
-        return response()->json(['message' => 'Posts retrieved successfully', 'posts' => $posts], 200);
     }
 
     public function store(Request $request)
@@ -60,7 +67,13 @@ class PostController extends Controller
     //A user should be able to see all the posts created by a specific user by using their username.
     public function postsByUsername($username)
     {
-        $user = User::where('name', $username)->firstOrFail();
+        try 
+        {
+            $user = User::where('name', $username)->firstOrFail();
+        } 
+        catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Post with username ' . $username . ' not found'], 404);
+        }
 
         $posts = Post::where('user_id', $user->id)->with('user', 'comments', 'votes')->paginate(100);
         
@@ -73,7 +86,13 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::findOrFail($id);
+        try 
+        {
+            $post = Post::findOrFail($id);
+        } 
+        catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Post with ID ' . $id . ' not found'], 404);
+        }
 
         if ($post->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
@@ -85,7 +104,13 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
-        $post = Post::findOrFail($id);
+        try 
+        {
+            $post = Post::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Post with ID ' . $id . ' not found'], 404);
+        }
 
         if ($post->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
@@ -106,7 +131,13 @@ class PostController extends Controller
 
     public function destroy($id)
     {
-        $post = Post::findOrFail($id);
+        try 
+        {
+            $post = Post::findOrFail($id);
+        } 
+        catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Post with ID ' . $id . ' not found'], 404);
+        }
 
         if ($post->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
