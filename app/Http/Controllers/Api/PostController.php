@@ -157,4 +157,50 @@ class PostController extends Controller
 
         return response()->json(['message' => 'Post deleted successfully'], 200);
     }
+
+    public function viewPostWithComments($postId)
+    {
+        try {
+         
+            $post = Post::with('comments.votes', 'votes')->findOrFail($postId);
+
+          
+            $upvotes = $post->votes()->where('upvote', true)->count();
+            $downvotes = $post->votes()->where('downvote', true)->count();
+
+            
+            $comments = $post->comments->map(function ($comment) {
+                return [
+                    'id' => $comment->id,
+                    'user_id' => $comment->user_id,
+                    'content' => $comment->content,
+                    'created_at' => $comment->created_at,
+                    'updated_at' => $comment->updated_at,
+                    'upvotes' => $comment->votes()->where('upvote', true)->count(),
+                    'downvotes' => $comment->votes()->where('downvote', true)->count(),
+                ];
+            });
+
+            return response()->json([
+                'message' => 'Post retrieved successfully',
+                'post' => [
+                    'id' => $post->id,
+                    'user_id' => $post->user_id,
+                    'title' => $post->title,
+                    'content' => $post->content,
+                    'created_at' => $post->created_at,
+                    'updated_at' => $post->updated_at,
+                    'upvotes' => $upvotes,
+                    'downvotes' => $downvotes,
+                    'comments' => $comments
+                ]
+            ], 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Post not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error: Something went wrong'], 500);
+        }
+    }
+
 }

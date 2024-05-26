@@ -40,6 +40,9 @@ Route::middleware('auth:sanctum')->group(function ()
 
     Route::post('posts/{post}/comments', [App\Http\Controllers\Api\CommentController::class, 'store']);
 
+    Route::get('posts/{postId}/view', [App\Http\Controllers\Api\PostController::class, 'viewPostWithComments']);
+
+
     //i remove due to lack of time to test
     // Route::put('comments/{comment}', [App\Http\Controllers\Api\CommentController::class, 'update']);
     // Route::put('comments/{parentComment}/replies/{reply}', [App\Http\Controllers\Api\CommentController::class, 'updateReply']);
