@@ -20,12 +20,27 @@ class CommentController extends Controller
             'content' => 'required|string',
         ]);
 
-        $comment = Comment::create([
-            'user_id' => $user->id,
-            'post_id' => $postId,
-            'parent_comment_id' => $parentCommentId,
-            'content' => $validated['content'],
-        ]);
+        // If $parentCommentId is provided, it means this is a reply to a comment
+        if (!is_null($parentCommentId)) {
+            // Check if the parent comment exists and belongs to the same post
+            $parentComment = Comment::where('id', $parentCommentId)
+                                    ->where('post_id', $postId)
+                                    ->firstOrFail();
+
+            $comment = Comment::create([
+                'user_id' => $user->id,
+                'post_id' => $postId,
+                'parent_comment_id' => $parentCommentId,
+                'content' => $validated['content'],
+            ]);
+        } else {
+            // Otherwise, it's a regular comment
+            $comment = Comment::create([
+                'user_id' => $user->id,
+                'post_id' => $postId,
+                'content' => $validated['content'],
+            ]);
+        }
 
         return response()->json(['message' => 'Comment created successfully', 'comment' => $comment], 201);
     }
