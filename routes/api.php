@@ -24,7 +24,7 @@ Route::post('/login', [App\Http\Controllers\Api\Auth\LoginController::class, 'lo
 Route::middleware('auth:sanctum')->group(function () 
 {
     Route::get('posts', [App\Http\Controllers\Api\PostController::class, 'index']);
-    Route::post('posts', [App\Http\Controllers\Api\PostController::class, 'store']);
+    Route::post('posts/create', [App\Http\Controllers\Api\PostController::class, 'store']);
     Route::get('posts/{id}', [App\Http\Controllers\Api\PostController::class, 'show']);
     Route::put('posts/{id}', [App\Http\Controllers\Api\PostController::class, 'update']);
     Route::delete('posts/{id}', [App\Http\Controllers\Api\PostController::class, 'destroy']);
